@@ -13,6 +13,7 @@
 #include <cstddef>
 #include <type_traits>
 #include <string>
+#include <iosfwd>
 
 #include <catch2/internal/catch_compiler_capabilities.hpp>
 #include <catch2/internal/catch_config_wchar.hpp>
@@ -125,7 +126,7 @@ namespace Catch {
                 ReusableStringStream rss;
                 // NB: call using the function-like syntax to avoid ambiguity with
                 // user-defined templated operator<< under clang.
-                rss.operator<<(value);
+                rss.get() << value;
                 return rss.str();
         }
 
@@ -407,11 +408,18 @@ namespace Catch {
 }
 #endif // CATCH_CONFIG_ENABLE_OPTIONAL_STRINGMAKER
 
+namespace Catch {
+    namespace Detail {
+        void printImpl(std::ostream& os, const std::string& str);
+    }
+}
+
 // Separate std::tuple specialization
 #if defined(CATCH_CONFIG_ENABLE_TUPLE_STRINGMAKER)
 #include <tuple>
 namespace Catch {
     namespace Detail {
+
         template<
             typename Tuple,
             std::size_t N = 0,
@@ -419,8 +427,8 @@ namespace Catch {
             >
             struct TupleElementPrinter {
             static void print(const Tuple& tuple, std::ostream& os) {
-                os << (N ? ", " : " ")
-                    << ::Catch::Detail::stringify(std::get<N>(tuple));
+                printImpl(os, N ? ", " : " ");
+                printImpl(os, ::Catch::Detail::stringify(std::get<N>(tuple)));
                 TupleElementPrinter<Tuple, N + 1>::print(tuple, os);
             }
         };

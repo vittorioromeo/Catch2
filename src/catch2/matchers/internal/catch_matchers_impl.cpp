@@ -11,6 +11,8 @@
 #include <catch2/interfaces/catch_interfaces_registry_hub.hpp>
 #include <catch2/internal/catch_move_and_forward.hpp>
 
+#include <ostream>
+
 namespace Catch {
 
     // This is the general overload that takes a any string matcher
@@ -22,4 +24,10 @@ namespace Catch {
         handler.handleExpr( expr );
     }
 
+    namespace Detail {
+        void printExpressionImpl(std::ostream& os, const std::string& a, const std::string& b)
+        {
+            os << a << ' ' << b;
+        }
+    }
 } // namespace Catch

@@ -8,10 +8,18 @@
 #include <catch2/internal/catch_reusable_string_stream.hpp>
 #include <catch2/internal/catch_singletons.hpp>
 #include <catch2/internal/catch_unique_ptr.hpp>
+#include <catch2/internal/catch_lazy_expr.hpp>
+#include <catch2/internal/catch_stringref.hpp>
+#include <catch2/internal/catch_source_line_info.hpp>
+
+#include <catch2/catch_version.hpp>
+#include <catch2/catch_test_spec.hpp>
 
 #include <cstdio>
 #include <sstream>
 #include <vector>
+#include <cstddef>
+#include <ostream>
 
 namespace Catch {
 
@@ -39,24 +47,81 @@ namespace Catch {
         }
     };
 
+    struct ReusableStringStream::Impl
+    {
+        std::size_t m_index;
+        std::ostream* m_oss;
+
+        Impl()
+        :   m_index( Singleton<StringStreams>::getMutable().add() ),
+            m_oss( Singleton<StringStreams>::getMutable().m_streams[m_index].get() )
+        {}
+
+        ~Impl() {
+            static_cast<std::ostringstream*>( m_oss )->str("");
+            m_oss->clear();
+            Singleton<StringStreams>::getMutable().release( m_index );
+        }
+    };
+
     ReusableStringStream::ReusableStringStream()
-    :   m_index( Singleton<StringStreams>::getMutable().add() ),
-        m_oss( Singleton<StringStreams>::getMutable().m_streams[m_index].get() )
+    :   m_impl(new Impl)
     {}
 
     ReusableStringStream::~ReusableStringStream() {
-        static_cast<std::ostringstream*>( m_oss )->str("");
-        m_oss->clear();
-        Singleton<StringStreams>::getMutable().release( m_index );
+        delete m_impl;
     }
 
     std::string ReusableStringStream::str() const {
-        return static_cast<std::ostringstream*>( m_oss )->str();
+        return static_cast<std::ostringstream*>( m_impl->m_oss )->str();
     }
 
     void ReusableStringStream::str( std::string const& str ) {
-        static_cast<std::ostringstream*>( m_oss )->str( str );
+        static_cast<std::ostringstream*>( m_impl->m_oss )->str( str );
+    }
+
+    auto ReusableStringStream::operator << ( char const* value ) -> ReusableStringStream&
+    {
+        (*m_impl->m_oss) << value;
+        return *this;
+    }
+
+    auto ReusableStringStream::operator << ( std::string const& value ) -> ReusableStringStream&
+    {
+        (*m_impl->m_oss) << value;
+        return *this;
+    }
+
+    auto ReusableStringStream::operator << ( LazyExpression const& value ) -> ReusableStringStream&
+    {
+        (*m_impl->m_oss) << value;
+        return *this;
+    }
+
+    auto ReusableStringStream::operator << ( StringRef const& value ) -> ReusableStringStream&
+    {
+        (*m_impl->m_oss) << value;
+        return *this;
+    }
+
+    auto ReusableStringStream::operator << ( SourceLineInfo const& value ) -> ReusableStringStream&
+    {
+        (*m_impl->m_oss) << value;
+        return *this;
+    }
+
+    auto ReusableStringStream::operator << ( Version const& value ) -> ReusableStringStream&
+    {
+        (*m_impl->m_oss) << value;
+        return *this;
+    }
+
+    auto ReusableStringStream::operator << ( TestSpec const& value ) -> ReusableStringStream&
+    {
+        (*m_impl->m_oss) << value;
+        return *this;
     }
 
 
+    auto ReusableStringStream::get() -> std::ostream& { return *m_impl->m_oss; }
 }

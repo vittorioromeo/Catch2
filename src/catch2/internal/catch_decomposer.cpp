@@ -8,6 +8,8 @@
 
 #include <catch2/internal/catch_decomposer.hpp>
 
+#include <ostream>
+
 namespace Catch {
 
     ITransientExpression::~ITransientExpression() = default;

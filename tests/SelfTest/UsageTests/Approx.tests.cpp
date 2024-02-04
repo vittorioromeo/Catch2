@@ -10,6 +10,7 @@
 #include <catch2/catch_approx.hpp>
 
 #include <cmath>
+#include <ostream>
 
 using Catch::Approx;
 

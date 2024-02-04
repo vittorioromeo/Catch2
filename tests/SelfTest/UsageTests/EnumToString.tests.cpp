@@ -9,6 +9,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/internal/catch_enum_values_registry.hpp>
 
+#include <ostream>
 
 namespace {
 // Enum without user-provided stream operator

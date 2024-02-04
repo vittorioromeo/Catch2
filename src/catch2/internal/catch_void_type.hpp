@@ -13,10 +13,7 @@ namespace Catch {
     namespace Detail {
 
         template <typename...>
-        struct make_void { using type = void; };
-
-        template <typename... Ts>
-        using void_t = typename make_void<Ts...>::type;
+        using void_t = void;
 
     } // namespace Detail
 } // namespace Catch

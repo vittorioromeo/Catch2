@@ -68,7 +68,7 @@ namespace Catch {
         // Jenkins use that schema for validation JUnit reporter output.
         std::string formatDuration( double seconds ) {
             ReusableStringStream rss;
-            rss << std::fixed << std::setprecision( 3 ) << seconds;
+            rss.get() << std::fixed << std::setprecision( 3 ) << seconds;
             return rss.str();
         }
 
@@ -291,7 +291,7 @@ namespace Catch {
                 }
                 if (result.hasExpandedExpression()) {
                     rss << "with expansion:\n";
-                    rss << TextFlow::Column(result.getExpandedExpression()).indent(2) << '\n';
+                    rss.get() << TextFlow::Column(result.getExpandedExpression()).indent(2) << '\n';
                 }
             }
 

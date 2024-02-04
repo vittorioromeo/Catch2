@@ -13,6 +13,7 @@
 
 #include <iosfwd>
 #include <vector>
+#include <ostream>
 
 namespace Catch {
     enum class XmlFormatting {

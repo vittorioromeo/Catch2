@@ -13,6 +13,8 @@
 
 #include <helpers/type_with_lit_0_comparisons.hpp>
 
+#include <stdexcept>
+
 #if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable:4702) // unreachable code in the macro expansions

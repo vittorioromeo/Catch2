@@ -11,6 +11,7 @@
 
 #include <map>
 #include <set>
+#include <ostream>
 
 TEST_CASE( "Character pretty printing" ){
     SECTION("Specifically escaped"){
