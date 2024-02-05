@@ -80,6 +80,18 @@ namespace Catch {
         static_cast<std::ostringstream*>( m_impl->m_oss )->str( str );
     }
 
+    auto ReusableStringStream::operator << ( int const* value ) -> ReusableStringStream&
+    {
+        (*m_impl->m_oss) << value;
+        return *this;
+    }
+
+    auto ReusableStringStream::operator << ( char value ) -> ReusableStringStream&
+    {
+        (*m_impl->m_oss) << value;
+        return *this;
+    }
+
     auto ReusableStringStream::operator << ( char const* value ) -> ReusableStringStream&
     {
         (*m_impl->m_oss) << value;

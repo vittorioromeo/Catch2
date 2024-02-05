@@ -9,12 +9,40 @@
 #define CATCH_UNIQUE_PTR_HPP_INCLUDED
 
 #include <cassert>
-#include <type_traits>
 
 #include <catch2/internal/catch_move_and_forward.hpp>
 
 namespace Catch {
 namespace Detail {
+
+#if __has_builtin(__is_base_of)
+    template <typename B, typename D>
+    struct IsBaseOf
+    {
+        enum
+        {
+            value = __is_base_of(B, D)
+        };
+    };
+
+#else
+    #include <type_traits>
+
+    namespace sf::priv
+    {
+    template <typename B, typename D>
+    using IsBaseOf = std::is_base_of<B, D>;
+    }
+#endif
+
+    // clang-format off
+    template<bool, typename = void> struct EnableIfImpl          { };
+    template<typename T>            struct EnableIfImpl<true, T> { using type = T; };
+    // clang-format on
+
+    template <bool B, typename T = void>
+    using EnableIf = typename EnableIfImpl<B, T>::type;
+
     /**
      * A reimplementation of `std::unique_ptr` for improved compilation performance
      *
@@ -24,19 +52,19 @@ namespace Detail {
     class unique_ptr {
         T* m_ptr;
     public:
-        constexpr unique_ptr(std::nullptr_t = nullptr):
+        constexpr unique_ptr(decltype(nullptr) = nullptr):
             m_ptr{}
         {}
         explicit constexpr unique_ptr(T* ptr):
             m_ptr(ptr)
         {}
 
-        template <typename U, typename = std::enable_if_t<std::is_base_of<T, U>::value>>
+        template <typename U, typename = EnableIf<IsBaseOf<T, U>::value>>
         unique_ptr(unique_ptr<U>&& from):
             m_ptr(from.release())
         {}
 
-        template <typename U, typename = std::enable_if_t<std::is_base_of<T, U>::value>>
+        template <typename U, typename = EnableIf<IsBaseOf<T, U>::value>>
         unique_ptr& operator=(unique_ptr<U>&& from) {
             reset(from.release());
 

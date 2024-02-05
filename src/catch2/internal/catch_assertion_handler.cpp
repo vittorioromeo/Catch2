@@ -11,6 +11,7 @@
 #include <catch2/internal/catch_debugger.hpp>
 #include <catch2/internal/catch_test_failure_exception.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
+#include <catch2/interfaces/catch_interfaces_capture.hpp>
 
 namespace Catch {
 
@@ -24,6 +25,14 @@ namespace Catch {
     {
         m_resultCapture.notifyAssertionStarted( m_assertionInfo );
     }
+
+
+    AssertionHandler::~AssertionHandler() {
+        if ( !m_completed ) {
+            m_resultCapture.handleIncomplete( m_assertionInfo );
+        }
+    }
+
 
     void AssertionHandler::handleExpr( ITransientExpression const& expr ) {
         m_resultCapture.handleExpr( m_assertionInfo, expr, m_reaction );

@@ -10,11 +10,11 @@
 
 #include <catch2/catch_assertion_info.hpp>
 #include <catch2/internal/catch_decomposer.hpp>
-#include <catch2/interfaces/catch_interfaces_capture.hpp>
 
 #include <string>
 
 namespace Catch {
+    class IResultCapture;
 
     struct AssertionReaction {
         bool shouldDebugBreak = false;
@@ -34,11 +34,7 @@ namespace Catch {
                 SourceLineInfo const& lineInfo,
                 StringRef capturedExpression,
                 ResultDisposition::Flags resultDisposition );
-        ~AssertionHandler() {
-            if ( !m_completed ) {
-                m_resultCapture.handleIncomplete( m_assertionInfo );
-            }
-        }
+        ~AssertionHandler();
 
 
         template<typename T>

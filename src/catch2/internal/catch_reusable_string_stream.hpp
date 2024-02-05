@@ -10,12 +10,9 @@
 
 #include <catch2/internal/catch_noncopyable.hpp>
 
-
 #include <iosfwd>
 
 #include <string>
-#include "catch2/internal/catch_lazy_expr.hpp"
-#include "catch2/internal/catch_source_line_info.hpp"
 
 namespace Catch {
 
@@ -50,6 +47,8 @@ namespace Catch {
 #pragma GCC diagnostic ignored "-Wnonnull-compare"
 #endif
 
+    auto operator << ( int const* value ) -> ReusableStringStream&;
+    auto operator << ( char value ) -> ReusableStringStream&;
     auto operator << ( char const* value ) -> ReusableStringStream&;
     auto operator << ( std::string const& value ) -> ReusableStringStream&;
     auto operator << ( LazyExpression const& value ) -> ReusableStringStream&;
