@@ -17,8 +17,6 @@
 #include <type_traits>
 #include <functional>
 #include <iosfwd>
-#include "catch2/interfaces/catch_interfaces_capture.hpp"
-#include "catch2/internal/catch_assertion_handler.hpp"
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -41,6 +39,8 @@ namespace Catch {
 
     template <typename T>
     struct always_false : std::false_type {};
+
+    class ITransientExpression;
 
     class IPrintableExpression {
     public:
