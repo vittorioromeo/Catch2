@@ -12,6 +12,8 @@
 #include <catch2/internal/catch_test_failure_exception.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
 
+#include <string>
+
 namespace Catch {
 
     AssertionHandler::AssertionHandler
@@ -75,8 +77,8 @@ namespace Catch {
 
     // This is the overload that takes a string and infers the Equals matcher from it
     // The more general overload, that takes any string matcher, is in catch_capture_matchers.cpp
-    void handleExceptionMatchExpr( AssertionHandler& handler, std::string const& str ) {
-        handleExceptionMatchExpr( handler, Matchers::Equals( str ) );
+    void handleExceptionMatchExpr( AssertionHandler& handler, StringRef str ) {
+        handleExceptionMatchExpr( handler, Matchers::Equals( std::string(str) ) );
     }
 
 } // namespace Catch

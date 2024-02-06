@@ -9,15 +9,14 @@
 #define CATCH_INTERFACES_CAPTURE_HPP_INCLUDED
 
 #include <string>
-#include <chrono>
 
-#include <catch2/internal/catch_stringref.hpp>
 #include <catch2/internal/catch_result_type.hpp>
 #include <catch2/internal/catch_unique_ptr.hpp>
 #include <catch2/benchmark/detail/catch_benchmark_stats_fwd.hpp>
 
 namespace Catch {
 
+    class StringRef;
     class AssertionResult;
     struct AssertionInfo;
     struct SectionInfo;

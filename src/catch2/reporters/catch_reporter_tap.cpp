@@ -167,7 +167,7 @@ namespace Catch {
                 const std::size_t N = static_cast<std::size_t>(itEnd - itMessage);
 
                 stream << colourImpl->guardColour( colour ) << " with "
-                       << pluralise( N, "message"_sr ) << ':';
+                       << pluralise( N, "message" ) << ':';
 
                 for (; itMessage != itEnd; ) {
                     // If this assertion is a warning ignore any INFO messages

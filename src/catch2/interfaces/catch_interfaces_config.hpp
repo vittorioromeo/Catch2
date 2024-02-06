@@ -9,12 +9,10 @@
 #define CATCH_INTERFACES_CONFIG_HPP_INCLUDED
 
 #include <catch2/internal/catch_noncopyable.hpp>
-#include <catch2/internal/catch_stringref.hpp>
 
-#include <chrono>
-#include <iosfwd>
 #include <string>
 #include <vector>
+#include <cstdint>
 
 namespace Catch {
 
@@ -61,6 +59,7 @@ namespace Catch {
 
     class TestSpec;
     class IStream;
+    class StringRef;
 
     class IConfig : public Detail::NonCopyable {
     public:
@@ -93,7 +92,7 @@ namespace Catch {
         virtual unsigned int benchmarkSamples() const = 0;
         virtual double benchmarkConfidenceInterval() const = 0;
         virtual unsigned int benchmarkResamples() const = 0;
-        virtual std::chrono::milliseconds benchmarkWarmupTime() const = 0;
+        virtual long long benchmarkWarmupTime() const = 0;
     };
 }
 

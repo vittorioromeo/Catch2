@@ -10,13 +10,28 @@
 #include <algorithm>
 #include <ostream>
 #include <cstring>
-#include <cstdint>
 
 namespace Catch {
     StringRef::StringRef( char const* rawChars ) noexcept
     : StringRef( rawChars, std::strlen(rawChars) )
     {}
 
+    StringRef::StringRef( std::string const& stdString ) noexcept
+    :   m_start( stdString.c_str() ),
+        m_size( stdString.size() )
+    {}
+
+    StringRef::operator std::string() const {
+        return std::string(m_start, m_size);
+    }
+
+    auto StringRef::operator == ( StringRef other ) const noexcept -> bool {
+        return m_size == other.m_size
+            && (std::memcmp( m_start, other.m_start, m_size ) == 0);
+    }
+    auto StringRef::operator != (StringRef other) const noexcept -> bool {
+        return !(*this == other);
+    }
 
     bool StringRef::operator<(StringRef rhs) const noexcept {
         if (m_size < rhs.m_size) {

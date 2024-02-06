@@ -8,11 +8,13 @@
 #ifndef CATCH_APPROX_HPP_INCLUDED
 #define CATCH_APPROX_HPP_INCLUDED
 
-#include <catch2/catch_tostring.hpp>
-
 #include <type_traits>
+#include <string>
 
 namespace Catch {
+
+    template <typename, typename>
+    struct StringMaker;
 
     class Approx {
     private:
@@ -119,7 +121,7 @@ namespace literals {
 } // end namespace literals
 
 template<>
-struct StringMaker<Catch::Approx> {
+struct StringMaker<Catch::Approx, void> {
     static std::string convert(Catch::Approx const& value);
 };
 

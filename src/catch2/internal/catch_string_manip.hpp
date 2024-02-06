@@ -8,14 +8,14 @@
 #ifndef CATCH_STRING_MANIP_HPP_INCLUDED
 #define CATCH_STRING_MANIP_HPP_INCLUDED
 
-#include <catch2/internal/catch_stringref.hpp>
-
 #include <cstdint>
 #include <string>
 #include <iosfwd>
 #include <vector>
 
 namespace Catch {
+
+    class StringRef;
 
     bool startsWith( std::string const& s, std::string const& prefix );
     bool startsWith( StringRef s, char prefix );
@@ -46,10 +46,10 @@ namespace Catch {
      */
     class pluralise {
         std::uint64_t m_count;
-        StringRef m_label;
+        const char* m_label;
 
     public:
-        constexpr pluralise(std::uint64_t count, StringRef label):
+        constexpr pluralise(std::uint64_t count, const char* label):
             m_count(count),
             m_label(label)
         {}

@@ -192,7 +192,7 @@ namespace Catch {
                                .width( CATCH_CONFIG_CONSOLE_WIDTH - 10 );
             out << str << wrapper << '\n';
         }
-        out << pluralise(tags.size(), "tag"_sr) << "\n\n" << std::flush;
+        out << pluralise(tags.size(), "tag") << "\n\n" << std::flush;
     }
 
     void defaultListTests(std::ostream& out, ColourImpl* streamColour, std::vector<TestCaseHandle> const& tests, bool isFiltered, Verbosity verbosity) {
@@ -228,9 +228,9 @@ namespace Catch {
         }
 
         if (isFiltered) {
-            out << pluralise(tests.size(), "matching test case"_sr);
+            out << pluralise(tests.size(), "matching test case");
         } else {
-            out << pluralise(tests.size(), "test case"_sr);
+            out << pluralise(tests.size(), "test case");
         }
         out << "\n\n" << std::flush;
     }
@@ -308,9 +308,9 @@ namespace Catch {
             stream << streamColour.guardColour( Colour::ResultSuccess )
                    << "All tests passed";
             stream << " ("
-                   << pluralise( totals.assertions.passed, "assertion"_sr )
+                   << pluralise( totals.assertions.passed, "assertion" )
                    << " in "
-                   << pluralise( totals.testCases.passed, "test case"_sr )
+                   << pluralise( totals.testCases.passed, "test case" )
                    << ')' << '\n';
             return;
         }

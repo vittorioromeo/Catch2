@@ -204,12 +204,12 @@ namespace Catch {
     bool Config::showInvisibles() const                { return m_data.showInvisibles; }
     Verbosity Config::verbosity() const                { return m_data.verbosity; }
 
-    bool Config::skipBenchmarks() const                           { return m_data.skipBenchmarks; }
-    bool Config::benchmarkNoAnalysis() const                      { return m_data.benchmarkNoAnalysis; }
-    unsigned int Config::benchmarkSamples() const                 { return m_data.benchmarkSamples; }
-    double Config::benchmarkConfidenceInterval() const            { return m_data.benchmarkConfidenceInterval; }
-    unsigned int Config::benchmarkResamples() const               { return m_data.benchmarkResamples; }
-    std::chrono::milliseconds Config::benchmarkWarmupTime() const { return std::chrono::milliseconds(m_data.benchmarkWarmupTime); }
+    bool Config::skipBenchmarks() const                 { return m_data.skipBenchmarks; }
+    bool Config::benchmarkNoAnalysis() const            { return m_data.benchmarkNoAnalysis; }
+    unsigned int Config::benchmarkSamples() const       { return m_data.benchmarkSamples; }
+    double Config::benchmarkConfidenceInterval() const  { return m_data.benchmarkConfidenceInterval; }
+    unsigned int Config::benchmarkResamples() const     { return m_data.benchmarkResamples; }
+    long long Config::benchmarkWarmupTime() const       { return m_data.benchmarkWarmupTime; }
 
     void Config::readBazelEnvVars() {
         // Register a JUnit reporter for Bazel. Bazel sets an environment

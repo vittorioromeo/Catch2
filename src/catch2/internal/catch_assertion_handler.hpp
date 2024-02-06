@@ -12,8 +12,6 @@
 #include <catch2/internal/catch_decomposer.hpp>
 #include <catch2/interfaces/catch_interfaces_capture.hpp>
 
-#include <string>
-
 namespace Catch {
 
     struct AssertionReaction {
@@ -61,7 +59,7 @@ namespace Catch {
         auto allowThrows() const -> bool;
     };
 
-    void handleExceptionMatchExpr( AssertionHandler& handler, std::string const& str );
+    void handleExceptionMatchExpr( AssertionHandler& handler, StringRef str );
 
 } // namespace Catch
 

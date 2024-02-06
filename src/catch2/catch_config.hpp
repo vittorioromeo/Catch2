@@ -12,11 +12,9 @@
 #include <catch2/interfaces/catch_interfaces_config.hpp>
 #include <catch2/internal/catch_unique_ptr.hpp>
 #include <catch2/internal/catch_optional.hpp>
-#include <catch2/internal/catch_stringref.hpp>
 #include <catch2/internal/catch_random_seed_generation.hpp>
 #include <catch2/internal/catch_reporter_spec_parser.hpp>
 
-#include <chrono>
 #include <map>
 #include <string>
 #include <vector>
@@ -24,6 +22,7 @@
 namespace Catch {
 
     class IStream;
+    class StringRef;
 
     /**
      * `ReporterSpec` but with the defaults filled in.
@@ -70,7 +69,7 @@ namespace Catch {
         unsigned int benchmarkSamples = 100;
         double benchmarkConfidenceInterval = 0.95;
         unsigned int benchmarkResamples = 100'000;
-        std::chrono::milliseconds::rep benchmarkWarmupTime = 100;
+        long long benchmarkWarmupTime = 100;
 
         Verbosity verbosity = Verbosity::Normal;
         WarnAbout::What warnings = WarnAbout::Nothing;
@@ -137,7 +136,7 @@ namespace Catch {
         unsigned int benchmarkSamples() const override;
         double benchmarkConfidenceInterval() const override;
         unsigned int benchmarkResamples() const override;
-        std::chrono::milliseconds benchmarkWarmupTime() const override;
+        long long benchmarkWarmupTime() const override;
 
     private:
         // Reads Bazel env vars and applies them to the config

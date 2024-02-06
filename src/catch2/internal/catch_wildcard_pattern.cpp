@@ -8,6 +8,7 @@
 #include <catch2/internal/catch_wildcard_pattern.hpp>
 #include <catch2/internal/catch_enforce.hpp>
 #include <catch2/internal/catch_string_manip.hpp>
+#include <catch2/internal/catch_stringref.hpp>
 
 namespace Catch {
 

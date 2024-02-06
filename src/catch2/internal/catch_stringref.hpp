@@ -13,8 +13,6 @@
 #include <iosfwd>
 #include <cassert>
 
-#include <cstring>
-
 namespace Catch {
 
     /// A non-owning string class (similar to the forthcoming std::string_view)
@@ -43,23 +41,13 @@ namespace Catch {
             m_size( size )
         {}
 
-        StringRef( std::string const& stdString ) noexcept
-        :   m_start( stdString.c_str() ),
-            m_size( stdString.size() )
-        {}
+        StringRef( std::string const& stdString ) noexcept;
 
-        explicit operator std::string() const {
-            return std::string(m_start, m_size);
-        }
+        explicit operator std::string() const;
 
     public: // operators
-        auto operator == ( StringRef other ) const noexcept -> bool {
-            return m_size == other.m_size
-                && (std::memcmp( m_start, other.m_start, m_size ) == 0);
-        }
-        auto operator != (StringRef other) const noexcept -> bool {
-            return !(*this == other);
-        }
+        auto operator == ( StringRef other ) const noexcept -> bool;
+        auto operator != (StringRef other) const noexcept -> bool;
 
         constexpr auto operator[] ( size_type index ) const noexcept -> char {
             assert(index < m_size);
