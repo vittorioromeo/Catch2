@@ -14,6 +14,7 @@
 #include <catch2/internal/catch_preprocessor_internal_stringify.hpp>
 #include <catch2/internal/catch_move_and_forward.hpp>
 
+#include <ostream>
 #include <string>
 
 namespace Catch {

@@ -20,7 +20,7 @@ namespace Catch {
         if( reconstructedExpression.empty() ) {
             if( lazyExpression ) {
                 ReusableStringStream rss;
-                rss << lazyExpression;
+                rss.get() << lazyExpression;
                 reconstructedExpression = rss.str();
             }
         }

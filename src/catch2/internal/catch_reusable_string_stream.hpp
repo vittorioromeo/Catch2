@@ -11,15 +11,21 @@
 #include <catch2/internal/catch_noncopyable.hpp>
 
 #include <iosfwd>
-#include <cstddef>
-#include <ostream>
+
 #include <string>
 
 namespace Catch {
 
+    class LazyExpression;
+    class StringRef;
+    struct SourceLineInfo;
+    struct Version;
+    class TestSpec;
+
     class ReusableStringStream : Detail::NonCopyable {
-        std::size_t m_index;
-        std::ostream* m_oss;
+        struct Impl;
+
+        Impl* m_impl;
     public:
         ReusableStringStream();
         ~ReusableStringStream();
@@ -41,16 +47,28 @@ namespace Catch {
 #pragma GCC diagnostic ignored "-Wnonnull-compare"
 #endif
 
-        template<typename T>
-        auto operator << ( T const& value ) -> ReusableStringStream& {
-            *m_oss << value;
-            return *this;
-        }
+    auto operator << ( int const* value ) -> ReusableStringStream&;
+    auto operator << ( char value ) -> ReusableStringStream&;
+    auto operator << ( char const* value ) -> ReusableStringStream&;
+    auto operator << ( std::string const& value ) -> ReusableStringStream&;
+    auto operator << ( LazyExpression const& value ) -> ReusableStringStream&;
+    auto operator << ( StringRef const& value ) -> ReusableStringStream&;
+    auto operator << ( SourceLineInfo const& value ) -> ReusableStringStream&;
+    auto operator << ( Version const& value ) -> ReusableStringStream&;
+    auto operator << ( TestSpec const& value ) -> ReusableStringStream&;
+
+/*
+    template<typename T>
+    auto operator << ( T const& value ) -> ReusableStringStream& {
+        *m_oss << value;
+        return *this;
+    }
+*/
 
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif
-        auto get() -> std::ostream& { return *m_oss; }
+        auto get() -> std::ostream&;
     };
 }
 

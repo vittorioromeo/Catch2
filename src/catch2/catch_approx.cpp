@@ -45,7 +45,7 @@ namespace Catch {
 
     std::string Approx::toString() const {
         ReusableStringStream rss;
-        rss << "Approx( " << ::Catch::Detail::stringify( m_value ) << " )";
+        rss.get() << "Approx( " << ::Catch::Detail::stringify( m_value ) << " )";
         return rss.str();
     }
 

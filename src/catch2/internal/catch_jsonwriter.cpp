@@ -8,6 +8,8 @@
 #include <catch2/internal/catch_enforce.hpp>
 #include <catch2/internal/catch_jsonwriter.hpp>
 
+#include <ostream>
+
 namespace Catch {
     void JsonUtils::indent( std::ostream& os, std::uint64_t level ) {
         for ( std::uint64_t i = 0; i < level; ++i ) {

@@ -20,7 +20,7 @@ namespace Catch {
         return std::to_string(t);
 #else
         ReusableStringStream rss;
-        rss << t;
+        rss.get() << t;
         return rss.str();
 #endif
     }

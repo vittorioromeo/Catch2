@@ -8,6 +8,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <ostream>
 
 
 #if defined(__GNUC__)

@@ -13,6 +13,7 @@
 #include <cstddef>
 #include <type_traits>
 #include <string>
+#include <ostream> // TODO: remove this oneeee
 
 #include <catch2/internal/catch_compiler_capabilities.hpp>
 #include <catch2/internal/catch_config_wchar.hpp>
@@ -125,7 +126,7 @@ namespace Catch {
                 ReusableStringStream rss;
                 // NB: call using the function-like syntax to avoid ambiguity with
                 // user-defined templated operator<< under clang.
-                rss.operator<<(value);
+                rss.get() << value;
                 return rss.str();
         }
 
@@ -342,13 +343,13 @@ namespace Catch {
         template<typename InputIterator, typename Sentinel = InputIterator>
         std::string rangeToString(InputIterator first, Sentinel last) {
             ReusableStringStream rss;
-            rss << "{ ";
+            rss.get() << "{ ";
             if (first != last) {
-                rss << ::Catch::Detail::stringify(*first);
+                rss.get() << ::Catch::Detail::stringify(*first);
                 for (++first; first != last; ++first)
-                    rss << ", " << ::Catch::Detail::stringify(*first);
+                    rss.get() << ", " << ::Catch::Detail::stringify(*first);
             }
-            rss << " }";
+            rss.get() << " }";
             return rss.str();
         }
     }
@@ -374,7 +375,7 @@ namespace Catch {
     struct StringMaker<std::pair<T1, T2> > {
         static std::string convert(const std::pair<T1, T2>& pair) {
             ReusableStringStream rss;
-            rss << "{ "
+            rss.get() << "{ "
                 << ::Catch::Detail::stringify(pair.first)
                 << ", "
                 << ::Catch::Detail::stringify(pair.second)
@@ -440,9 +441,9 @@ namespace Catch {
     struct StringMaker<std::tuple<Types...>> {
         static std::string convert(const std::tuple<Types...>& tuple) {
             ReusableStringStream rss;
-            rss << '{';
+            rss.get() << '{';
             Detail::TupleElementPrinter<std::tuple<Types...>>::print(tuple, rss.get());
-            rss << " }";
+            rss.get() << " }";
             return rss.str();
         }
     };
@@ -509,16 +510,16 @@ namespace Catch {
     template<typename Allocator>
     std::string rangeToString( std::vector<bool, Allocator> const& v ) {
         ReusableStringStream rss;
-        rss << "{ ";
+        rss.get() << "{ ";
         bool first = true;
         for( bool b : v ) {
             if( first )
                 first = false;
             else
-                rss << ", ";
-            rss << ::Catch::Detail::stringify( b );
+                rss.get() << ", ";
+            rss.get() << ::Catch::Detail::stringify( b );
         }
-        rss << " }";
+        rss.get() << " }";
         return rss.str();
     }
 
@@ -551,7 +552,7 @@ template <class Ratio>
 struct ratio_string {
     static std::string symbol() {
         Catch::ReusableStringStream rss;
-        rss << '[' << Ratio::num << '/'
+        rss.get() << '[' << Ratio::num << '/'
             << Ratio::den << ']';
         return rss.str();
     }
@@ -588,7 +589,7 @@ struct ratio_string<std::milli> {
     struct StringMaker<std::chrono::duration<Value, Ratio>> {
         static std::string convert(std::chrono::duration<Value, Ratio> const& duration) {
             ReusableStringStream rss;
-            rss << duration.count() << ' ' << ratio_string<Ratio>::symbol() << 's';
+            rss.get() << duration.count() << ' ' << ratio_string<Ratio>::symbol() << 's';
             return rss.str();
         }
     };
@@ -596,7 +597,7 @@ struct ratio_string<std::milli> {
     struct StringMaker<std::chrono::duration<Value, std::ratio<1>>> {
         static std::string convert(std::chrono::duration<Value, std::ratio<1>> const& duration) {
             ReusableStringStream rss;
-            rss << duration.count() << " s";
+            rss.get() << duration.count() << " s";
             return rss.str();
         }
     };
@@ -604,7 +605,7 @@ struct ratio_string<std::milli> {
     struct StringMaker<std::chrono::duration<Value, std::ratio<60>>> {
         static std::string convert(std::chrono::duration<Value, std::ratio<60>> const& duration) {
             ReusableStringStream rss;
-            rss << duration.count() << " m";
+            rss.get() << duration.count() << " m";
             return rss.str();
         }
     };
@@ -612,7 +613,7 @@ struct ratio_string<std::milli> {
     struct StringMaker<std::chrono::duration<Value, std::ratio<3600>>> {
         static std::string convert(std::chrono::duration<Value, std::ratio<3600>> const& duration) {
             ReusableStringStream rss;
-            rss << duration.count() << " h";
+            rss.get() << duration.count() << " h";
             return rss.str();
         }
     };

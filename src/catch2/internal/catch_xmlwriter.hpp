@@ -11,7 +11,7 @@
 #include <catch2/internal/catch_reusable_string_stream.hpp>
 #include <catch2/internal/catch_stringref.hpp>
 
-#include <iosfwd>
+#include <ostream>
 #include <vector>
 
 namespace Catch {
@@ -114,7 +114,7 @@ namespace Catch {
                       !std::is_convertible<T, StringRef>::value>>
         XmlWriter& writeAttribute( StringRef name, T const& attribute ) {
             ReusableStringStream rss;
-            rss << attribute;
+            rss.get() << attribute;
             return writeAttribute( name, rss.str() );
         }
 

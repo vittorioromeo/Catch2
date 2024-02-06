@@ -21,6 +21,7 @@
 #include <catch2/internal/catch_move_and_forward.hpp>
 #include <catch2/catch_get_random_seed.hpp>
 
+#include <ostream>
 #include <cstdio>
 
 #if defined(_MSC_VER)
@@ -336,7 +337,7 @@ public:
 
     template<typename T>
     friend TablePrinter& operator<< (TablePrinter& tp, T const& value) {
-        tp.m_oss << value;
+        tp.m_oss.get() << value;
         return tp;
     }
 

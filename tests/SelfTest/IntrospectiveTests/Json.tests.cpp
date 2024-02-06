@@ -10,6 +10,7 @@
 #include <catch2/internal/catch_jsonwriter.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
 
+#include <ostream>
 #include <sstream>
 
 namespace {

@@ -68,7 +68,7 @@ namespace Catch {
         // Jenkins use that schema for validation JUnit reporter output.
         std::string formatDuration( double seconds ) {
             ReusableStringStream rss;
-            rss << std::fixed << std::setprecision( 3 ) << seconds;
+            rss.get() << std::fixed << std::setprecision( 3 ) << seconds;
             return rss.str();
         }
 
@@ -281,27 +281,27 @@ namespace Catch {
 
             ReusableStringStream rss;
             if ( result.getResultType() == ResultWas::ExplicitSkip ) {
-                rss << "SKIPPED\n";
+                rss.get() << "SKIPPED\n";
             } else {
-                rss << "FAILED" << ":\n";
+                rss.get() << "FAILED" << ":\n";
                 if (result.hasExpression()) {
-                    rss << "  ";
-                    rss << result.getExpressionInMacro();
-                    rss << '\n';
+                    rss.get() << "  ";
+                    rss.get() << result.getExpressionInMacro();
+                    rss.get() << '\n';
                 }
                 if (result.hasExpandedExpression()) {
-                    rss << "with expansion:\n";
-                    rss << TextFlow::Column(result.getExpandedExpression()).indent(2) << '\n';
+                    rss.get() << "with expansion:\n";
+                    rss.get() << TextFlow::Column(result.getExpandedExpression()).indent(2) << '\n';
                 }
             }
 
             if( result.hasMessage() )
-                rss << result.getMessage() << '\n';
+                rss.get() << result.getMessage() << '\n';
             for( auto const& msg : stats.infoMessages )
                 if( msg.type == ResultWas::Info )
-                    rss << msg.message << '\n';
+                    rss.get() << msg.message << '\n';
 
-            rss << "at " << result.getSourceInfo();
+            rss.get() << "at " << result.getSourceInfo();
             xml.writeText( rss.str(), XmlFormatting::Newline );
         }
     }

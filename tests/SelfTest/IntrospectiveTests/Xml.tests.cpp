@@ -13,10 +13,11 @@
 #include <catch2/matchers/catch_matchers_string.hpp>
 
 #include <sstream>
+#include <ostream>
 
 static std::string encode( std::string const& str, Catch::XmlEncode::ForWhat forWhat = Catch::XmlEncode::ForTextNodes ) {
     Catch::ReusableStringStream oss;
-    oss << Catch::XmlEncode( str, forWhat );
+    oss.get()<< Catch::XmlEncode( str, forWhat );
     return oss.str();
 }
 

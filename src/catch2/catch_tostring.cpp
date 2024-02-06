@@ -40,7 +40,7 @@ namespace Detail {
             }
 
             ReusableStringStream rss;
-            rss << std::setprecision(precision)
+            rss.get() << std::setprecision(precision)
                 << std::fixed
                 << value;
             std::string d = rss.str();
@@ -106,9 +106,9 @@ namespace Detail {
 
         unsigned char const *bytes = static_cast<unsigned char const *>(object);
         ReusableStringStream rss;
-        rss << "0x" << std::setfill('0') << std::hex;
+        rss.get() << "0x" << std::setfill('0') << std::hex;
         for( ; i != end; i += inc )
-             rss << std::setw(2) << static_cast<unsigned>(bytes[i]);
+             rss.get() << std::setw(2) << static_cast<unsigned>(bytes[i]);
        return rss.str();
     }
 } // end Detail namespace
@@ -193,9 +193,9 @@ std::string StringMaker<long>::convert(long value) {
 }
 std::string StringMaker<long long>::convert(long long value) {
     ReusableStringStream rss;
-    rss << value;
+    rss.get() << value;
     if (value > Detail::hexThreshold) {
-        rss << " (0x" << std::hex << value << ')';
+        rss.get() << " (0x" << std::hex << value << ')';
     }
     return rss.str();
 }
@@ -208,9 +208,9 @@ std::string StringMaker<unsigned long>::convert(unsigned long value) {
 }
 std::string StringMaker<unsigned long long>::convert(unsigned long long value) {
     ReusableStringStream rss;
-    rss << value;
+    rss.get() << value;
     if (value > Detail::hexThreshold) {
-        rss << " (0x" << std::hex << value << ')';
+        rss.get() << " (0x" << std::hex << value << ')';
     }
     return rss.str();
 }

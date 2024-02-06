@@ -15,6 +15,7 @@
 #include <catch2/reporters/catch_reporter_helpers.hpp>
 
 #include <map>
+#include <ostream>
 
 namespace Catch {
 
@@ -136,14 +137,14 @@ namespace Catch {
 
             ReusableStringStream textRss;
             if ( result.getResultType() == ResultWas::ExplicitSkip ) {
-                textRss << "SKIPPED\n";
+                textRss.get() << "SKIPPED\n";
             } else {
-                textRss << "FAILED:\n";
+                textRss.get() << "FAILED:\n";
                 if (result.hasExpression()) {
                     textRss << '\t' << result.getExpressionInMacro() << '\n';
                 }
                 if (result.hasExpandedExpression()) {
-                    textRss << "with expansion:\n\t" << result.getExpandedExpression() << '\n';
+                    textRss.get() << "with expansion:\n\t" << result.getExpandedExpression() << '\n';
                 }
             }
 
@@ -154,7 +155,7 @@ namespace Catch {
                 if (msg.type == ResultWas::Info)
                     textRss << msg.message << '\n';
 
-            textRss << "at " << result.getSourceInfo();
+            textRss.get() << "at " << result.getSourceInfo();
             xml.writeText(textRss.str(), XmlFormatting::Newline);
         }
     }

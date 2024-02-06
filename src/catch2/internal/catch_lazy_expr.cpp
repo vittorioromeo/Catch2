@@ -9,6 +9,8 @@
 #include <catch2/internal/catch_lazy_expr.hpp>
 #include <catch2/internal/catch_decomposer.hpp>
 
+#include <ostream>
+
 namespace Catch {
 
     auto operator << (std::ostream& os, LazyExpression const& lazyExpr) -> std::ostream& {

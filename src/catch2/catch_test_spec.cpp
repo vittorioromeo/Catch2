@@ -96,7 +96,7 @@ namespace Catch {
 
     std::string TestSpec::extractFilterName( Filter const& filter ) {
         Catch::ReusableStringStream sstr;
-        sstr << filter;
+        sstr.get() << filter;
         return sstr.str();
     }
 
