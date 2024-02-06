@@ -27,6 +27,9 @@ namespace Catch {
         m_resultCapture.notifyAssertionStarted( m_assertionInfo );
     }
 
+    void AssertionHandler::handleExpr( IPrintableExpression const& expr ) {
+        expr.asTransient([this](ITransientExpression const& te){ handleExpr(te); });
+    }
     void AssertionHandler::handleExpr( ITransientExpression const& expr ) {
         m_resultCapture.handleExpr( m_assertionInfo, expr, m_reaction );
     }

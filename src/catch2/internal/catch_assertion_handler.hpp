@@ -9,10 +9,12 @@
 #define CATCH_ASSERTION_HANDLER_HPP_INCLUDED
 
 #include <catch2/catch_assertion_info.hpp>
-#include <catch2/internal/catch_decomposer.hpp>
 #include <catch2/interfaces/catch_interfaces_capture.hpp>
 
 namespace Catch {
+
+    class ITransientExpression;
+    class IPrintableExpression;
 
     struct AssertionReaction {
         bool shouldDebugBreak = false;
@@ -39,10 +41,11 @@ namespace Catch {
         }
 
 
-        template<typename T>
+        /*template<typename T>
         void handleExpr( ExprLhs<T> const& expr ) {
             handleExpr( expr.makeUnaryExpr() );
-        }
+        }*/
+        void handleExpr( IPrintableExpression const& expr );
         void handleExpr( ITransientExpression const& expr );
 
         void handleMessage(ResultWas::OfType resultType, StringRef message);

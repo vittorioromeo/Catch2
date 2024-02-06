@@ -10,6 +10,7 @@
 
 namespace Catch {
 
+    IPrintableExpression::~IPrintableExpression() = default;
     ITransientExpression::~ITransientExpression() = default;
 
     void formatReconstructedExpression( std::ostream &os, std::string const& lhs, StringRef op, std::string const& rhs ) {

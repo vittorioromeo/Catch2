@@ -15,7 +15,10 @@
 #include <catch2/internal/catch_logical_traits.hpp>
 
 #include <type_traits>
+#include <functional>
 #include <iosfwd>
+#include "catch2/interfaces/catch_interfaces_capture.hpp"
+#include "catch2/internal/catch_assertion_handler.hpp"
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -38,6 +41,12 @@ namespace Catch {
 
     template <typename T>
     struct always_false : std::false_type {};
+
+    class IPrintableExpression {
+    public:
+        virtual ~IPrintableExpression();
+        virtual void asTransient( std::function<void(ITransientExpression const&)> const& fn ) const = 0;
+    };
 
     class ITransientExpression {
         bool m_isBinaryExpression;
@@ -162,10 +171,18 @@ namespace Catch {
 
 
     template<typename LhsT>
-    class ExprLhs {
+    class ExprLhs : public IPrintableExpression {
         LhsT m_lhs;
     public:
         explicit ExprLhs( LhsT lhs ) : m_lhs( lhs ) {}
+
+        void asTransient( std::function<void(ITransientExpression const&)> const& fn ) const override
+        {
+            if constexpr (std::is_arithmetic_v<LhsT>)
+            {
+                fn(makeUnaryExpr());
+            }
+        }
 
 #define CATCH_INTERNAL_DEFINE_EXPRESSION_EQUALITY_OPERATOR( id, op )           \
     template <typename RhsT>                                                   \

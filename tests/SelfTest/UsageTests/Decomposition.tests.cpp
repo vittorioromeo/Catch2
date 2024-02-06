@@ -19,7 +19,7 @@ struct truthy {
     bool m_value;
 };
 
-std::ostream& operator<<(std::ostream& o, truthy) {
+[[maybe_unused]] std::ostream& operator<<(std::ostream& o, truthy) {
     o << "Hey, its truthy!";
     return o;
 }

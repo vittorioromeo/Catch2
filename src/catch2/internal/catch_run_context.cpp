@@ -13,6 +13,7 @@
 #include <catch2/interfaces/catch_interfaces_reporter.hpp>
 #include <catch2/internal/catch_compiler_capabilities.hpp>
 #include <catch2/internal/catch_context.hpp>
+#include <catch2/internal/catch_decomposer.hpp>
 #include <catch2/internal/catch_enforce.hpp>
 #include <catch2/internal/catch_fatal_condition_handler.hpp>
 #include <catch2/internal/catch_random_number_generator.hpp>
