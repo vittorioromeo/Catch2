@@ -8,8 +8,6 @@
 #ifndef CATCH_REUSABLE_STRING_STREAM_HPP_INCLUDED
 #define CATCH_REUSABLE_STRING_STREAM_HPP_INCLUDED
 
-#include <catch2/internal/catch_noncopyable.hpp>
-
 #include <iosfwd>
 
 #include <string>
@@ -22,13 +20,16 @@ namespace Catch {
     struct Version;
     class TestSpec;
 
-    class ReusableStringStream : Detail::NonCopyable {
+    class ReusableStringStream  {
         struct Impl;
 
         Impl* m_impl;
     public:
         ReusableStringStream();
         ~ReusableStringStream();
+
+        ReusableStringStream(const ReusableStringStream&) = delete;
+        ReusableStringStream(ReusableStringStream&&) = delete;
 
         //! Returns the serialized state
         std::string str() const;
