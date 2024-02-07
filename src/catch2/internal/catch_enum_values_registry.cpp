@@ -7,6 +7,7 @@
 // SPDX-License-Identifier: BSL-1.0
 #include <catch2/internal/catch_enum_values_registry.hpp>
 #include <catch2/internal/catch_string_manip.hpp>
+#include <catch2/internal/catch_stringref.hpp>
 
 #include <cassert>
 
@@ -29,9 +30,9 @@ namespace Catch {
             }
         }
 
-        std::vector<StringRef> parseEnums( StringRef enums ) {
+        std::vector<StringRefBase> parseEnums( StringRefBase enums ) {
             auto enumValues = splitStringRef( enums, ',' );
-            std::vector<StringRef> parsed;
+            std::vector<StringRefBase> parsed;
             parsed.reserve( enumValues.size() );
             for( auto const& enumValue : enumValues ) {
                 parsed.push_back(trim(extractInstanceName(enumValue)));
@@ -41,7 +42,7 @@ namespace Catch {
 
         EnumInfo::~EnumInfo() = default;
 
-        StringRef EnumInfo::lookup( int value ) const {
+        StringRefBase EnumInfo::lookup( int value ) const {
             for( auto const& valueToName : m_values ) {
                 if( valueToName.first == value )
                     return valueToName.second;
@@ -49,7 +50,7 @@ namespace Catch {
             return "{** unexpected enum value **}"_sr;
         }
 
-        Catch::Detail::unique_ptr<EnumInfo> makeEnumInfo( StringRef enumName, StringRef allValueNames, std::vector<int> const& values ) {
+        Catch::Detail::unique_ptr<EnumInfo> makeEnumInfo( StringRefBase enumName, StringRefBase allValueNames, std::vector<int> const& values ) {
             auto enumInfo = Catch::Detail::make_unique<EnumInfo>();
             enumInfo->m_name = enumName;
             enumInfo->m_values.reserve( values.size() );
@@ -63,11 +64,10 @@ namespace Catch {
             return enumInfo;
         }
 
-        EnumInfo const& EnumValuesRegistry::registerEnum( StringRef enumName, StringRef allValueNames, std::vector<int> const& values ) {
+        EnumInfo const& EnumValuesRegistry::registerEnum( StringRefBase enumName, StringRefBase allValueNames, std::vector<int> const& values ) {
             m_enumInfos.push_back(makeEnumInfo(enumName, allValueNames, values));
             return *m_enumInfos.back();
         }
 
     } // Detail
 } // Catch
-

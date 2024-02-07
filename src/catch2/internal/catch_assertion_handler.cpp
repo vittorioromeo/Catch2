@@ -10,21 +10,29 @@
 #include <catch2/internal/catch_context.hpp>
 #include <catch2/internal/catch_debugger.hpp>
 #include <catch2/internal/catch_test_failure_exception.hpp>
+#include <catch2/internal/catch_stringref.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
+#include <catch2/interfaces/catch_interfaces_capture.hpp>
 
 #include <string>
 
 namespace Catch {
 
     AssertionHandler::AssertionHandler
-        (   StringRef macroName,
+        (   StringRefBase macroName,
             SourceLineInfo const& lineInfo,
-            StringRef capturedExpression,
+            StringRefBase capturedExpression,
             ResultDisposition::Flags resultDisposition )
     :   m_assertionInfo{ macroName, lineInfo, capturedExpression, resultDisposition },
         m_resultCapture( getResultCapture() )
     {
         m_resultCapture.notifyAssertionStarted( m_assertionInfo );
+    }
+
+    AssertionHandler::~AssertionHandler() {
+        if ( !m_completed ) {
+            m_resultCapture.handleIncomplete( m_assertionInfo );
+        }
     }
 
     void AssertionHandler::handleExpr( IPrintableExpression const& expr ) {
@@ -33,7 +41,7 @@ namespace Catch {
     void AssertionHandler::handleExpr( ITransientExpression const& expr ) {
         m_resultCapture.handleExpr( m_assertionInfo, expr, m_reaction );
     }
-    void AssertionHandler::handleMessage(ResultWas::OfType resultType, StringRef message) {
+    void AssertionHandler::handleMessage(ResultWas::OfType resultType, StringRefBase message) {
         m_resultCapture.handleMessage( m_assertionInfo, resultType, message, m_reaction );
     }
 
@@ -80,8 +88,8 @@ namespace Catch {
 
     // This is the overload that takes a string and infers the Equals matcher from it
     // The more general overload, that takes any string matcher, is in catch_capture_matchers.cpp
-    void handleExceptionMatchExpr( AssertionHandler& handler, StringRef str ) {
-        handleExceptionMatchExpr( handler, Matchers::Equals( std::string(str) ) );
+    void handleExceptionMatchExpr( AssertionHandler& handler, StringRefBase str ) {
+        handleExceptionMatchExpr( handler, Matchers::Equals( std::string(StringRef(str)) ) );
     }
 
 } // namespace Catch

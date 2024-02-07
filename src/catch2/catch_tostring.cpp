@@ -11,7 +11,7 @@
 #include <catch2/internal/catch_context.hpp>
 #include <catch2/internal/catch_polyfills.hpp>
 
-#include <cmath>
+#include <cstring>
 #include <iomanip>
 
 namespace Catch {
@@ -54,7 +54,7 @@ namespace Detail {
         }
     } // end unnamed namespace
 
-    std::string convertIntoString(StringRef string, bool escape_invisibles) {
+    std::string convertIntoString(StringRefBase string, bool escape_invisibles) {
         std::string ret;
         // This is enough for the "don't escape invisibles" case, and a good
         // lower bound on the "escape invisibles" case.
@@ -62,7 +62,7 @@ namespace Detail {
 
         if (!escape_invisibles) {
             ret += '"';
-            ret += string;
+            ret.append(string.data(), string.size());
             ret += '"';
             return ret;
         }
@@ -92,7 +92,7 @@ namespace Detail {
         return ret;
     }
 
-    std::string convertIntoString(StringRef string) {
+    std::string convertIntoString(StringRefBase string) {
         return convertIntoString(string, getCurrentContext().getConfig()->showInvisibles());
     }
 
@@ -122,25 +122,25 @@ namespace Detail {
 //// ======================================================= ////
 
 std::string StringMaker<std::string>::convert(const std::string& str) {
-    return Detail::convertIntoString( str );
+    return Detail::convertIntoString( StringRefBase(str.data(), str.size()) );
 }
 
 #ifdef CATCH_CONFIG_CPP17_STRING_VIEW
 std::string StringMaker<std::string_view>::convert(std::string_view str) {
-    return Detail::convertIntoString( StringRef( str.data(), str.size() ) );
+    return Detail::convertIntoString( StringRefBase( str.data(), str.size() ) );
 }
 #endif
 
 std::string StringMaker<char const*>::convert(char const* str) {
     if (str) {
-        return Detail::convertIntoString( str );
+        return Detail::convertIntoString( StringRefBase(str, std::strlen(str)) );
     } else {
         return{ "{null string}" };
     }
 }
 std::string StringMaker<char*>::convert(char* str) {
     if (str) {
-        return Detail::convertIntoString( str );
+        return Detail::convertIntoString( StringRefBase(str, std::strlen(str)) );
     } else {
         return{ "{null string}" };
     }

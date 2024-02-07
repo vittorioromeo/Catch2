@@ -8,6 +8,8 @@
 #ifndef CATCH_STRINGREF_HPP_INCLUDED
 #define CATCH_STRINGREF_HPP_INCLUDED
 
+#include <catch2/internal/catch_stringrefbase.hpp>
+
 #include <cstddef>
 #include <string>
 #include <iosfwd>
@@ -18,27 +20,17 @@ namespace Catch {
     /// A non-owning string class (similar to the forthcoming std::string_view)
     /// Note that, because a StringRef may be a substring of another string,
     /// it may not be null terminated.
-    class StringRef {
-    public:
-        using size_type = std::size_t;
-        using const_iterator = const char*;
+    class StringRef : public StringRefBase {
 
-        static constexpr size_type npos{ static_cast<size_type>( -1 ) };
-
-    private:
-        static constexpr char const* const s_empty = "";
-
-        char const* m_start = s_empty;
-        size_type m_size = 0;
 
     public: // construction
         constexpr StringRef() noexcept = default;
 
         StringRef( char const* rawChars ) noexcept;
+        StringRef( StringRefBase base ) noexcept;
 
         constexpr StringRef( char const* rawChars, size_type size ) noexcept
-        :   m_start( rawChars ),
-            m_size( size )
+        :   StringRefBase( rawChars, size)
         {}
 
         StringRef( std::string const& stdString ) noexcept;
@@ -46,8 +38,7 @@ namespace Catch {
         explicit operator std::string() const;
 
     public: // operators
-        auto operator == ( StringRef other ) const noexcept -> bool;
-        auto operator != (StringRef other) const noexcept -> bool;
+
 
         constexpr auto operator[] ( size_type index ) const noexcept -> char {
             assert(index < m_size);
@@ -57,12 +48,6 @@ namespace Catch {
         bool operator<(StringRef rhs) const noexcept;
 
     public: // named queries
-        constexpr auto empty() const noexcept -> bool {
-            return m_size == 0;
-        }
-        constexpr auto size() const noexcept -> size_type {
-            return m_size;
-        }
 
         // Returns a substring of [start, start + length).
         // If start + length > size(), then the substring is [start, size()).
@@ -76,13 +61,7 @@ namespace Catch {
             }
         }
 
-        // Returns the current start pointer. May not be null-terminated.
-        constexpr char const* data() const noexcept {
-            return m_start;
-        }
 
-        constexpr const_iterator begin() const { return m_start; }
-        constexpr const_iterator end() const { return m_start + m_size; }
 
 
         friend std::string& operator += (std::string& lhs, StringRef sr);

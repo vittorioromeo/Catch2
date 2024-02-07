@@ -8,6 +8,7 @@
 #include <catch2/catch_assertion_result.hpp>
 #include <catch2/internal/catch_reusable_string_stream.hpp>
 #include <catch2/internal/catch_move_and_forward.hpp>
+#include <catch2/internal/catch_stringref.hpp>
 
 namespace Catch {
 
@@ -60,7 +61,7 @@ namespace Catch {
         if (isFalseTest(m_info.resultDisposition)) {
             expr += "!(";
         }
-        expr += m_info.capturedExpression;
+        expr += StringRef(m_info.capturedExpression);
         if (isFalseTest(m_info.resultDisposition)) {
             expr += ')';
         }
@@ -69,13 +70,13 @@ namespace Catch {
 
     std::string AssertionResult::getExpressionInMacro() const {
         if ( m_info.macroName.empty() ) {
-            return static_cast<std::string>( m_info.capturedExpression );
+            return static_cast<std::string>( StringRef(m_info.capturedExpression) );
         }
         std::string expr;
         expr.reserve( m_info.macroName.size() + m_info.capturedExpression.size() + 4 );
-        expr += m_info.macroName;
+        expr += StringRef(m_info.macroName);
         expr += "( ";
-        expr += m_info.capturedExpression;
+        expr += StringRef(m_info.capturedExpression);
         expr += " )";
         return expr;
     }

@@ -92,8 +92,9 @@ namespace Catch {
 ///////////////////////////////////////////////////////////////////////////////
 #define INTERNAL_CATCH_MSG( macroName, messageType, resultDisposition, ... ) \
     do { \
-        Catch::AssertionHandler catchAssertionHandler( macroName##_catch_sr, CATCH_INTERNAL_LINEINFO, Catch::StringRef(), resultDisposition ); \
-        catchAssertionHandler.handleMessage( messageType, ( Catch::MessageStream() << __VA_ARGS__ + ::Catch::StreamEndStop() ).m_stream.str() ); \
+        ::Catch::AssertionHandler catchAssertionHandler( macroName, CATCH_INTERNAL_LINEINFO, Catch::StringRefBase(), resultDisposition ); \
+        auto msgstr = ( ::Catch::MessageStream() << __VA_ARGS__ + ::Catch::StreamEndStop() ).m_stream.str(); \
+        catchAssertionHandler.handleMessage( messageType, ::Catch::StringRefBase(msgstr.c_str(), msgstr.size()) ); \
         INTERNAL_CATCH_REACT( catchAssertionHandler ) \
     } while( false )
 

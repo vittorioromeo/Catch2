@@ -9,12 +9,13 @@
 #define CATCH_ASSERTION_HANDLER_HPP_INCLUDED
 
 #include <catch2/catch_assertion_info.hpp>
-#include <catch2/interfaces/catch_interfaces_capture.hpp>
+#include <catch2/internal/catch_stringrefbase.hpp>
 
 namespace Catch {
 
     class ITransientExpression;
     class IPrintableExpression;
+    class IResultCapture;
 
     struct AssertionReaction {
         bool shouldDebugBreak = false;
@@ -30,15 +31,11 @@ namespace Catch {
 
     public:
         AssertionHandler
-            (   StringRef macroName,
+            (   StringRefBase macroName,
                 SourceLineInfo const& lineInfo,
-                StringRef capturedExpression,
+                StringRefBase capturedExpression,
                 ResultDisposition::Flags resultDisposition );
-        ~AssertionHandler() {
-            if ( !m_completed ) {
-                m_resultCapture.handleIncomplete( m_assertionInfo );
-            }
-        }
+        ~AssertionHandler();
 
 
         /*template<typename T>
@@ -48,7 +45,7 @@ namespace Catch {
         void handleExpr( IPrintableExpression const& expr );
         void handleExpr( ITransientExpression const& expr );
 
-        void handleMessage(ResultWas::OfType resultType, StringRef message);
+        void handleMessage(ResultWas::OfType resultType, StringRefBase message);
 
         void handleExceptionThrownAsExpected();
         void handleUnexpectedExceptionNotThrown();
@@ -62,7 +59,7 @@ namespace Catch {
         auto allowThrows() const -> bool;
     };
 
-    void handleExceptionMatchExpr( AssertionHandler& handler, StringRef str );
+    void handleExceptionMatchExpr( AssertionHandler& handler, StringRefBase str );
 
 } // namespace Catch
 

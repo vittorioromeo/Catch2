@@ -16,20 +16,23 @@ namespace Catch {
     : StringRef( rawChars, std::strlen(rawChars) )
     {}
 
+    StringRef::StringRef( StringRefBase base ) noexcept
+    : StringRefBase(base)
+    {}
+
     StringRef::StringRef( std::string const& stdString ) noexcept
-    :   m_start( stdString.c_str() ),
-        m_size( stdString.size() )
+    :   StringRefBase( stdString.c_str(), stdString.size() )
     {}
 
     StringRef::operator std::string() const {
         return std::string(m_start, m_size);
     }
 
-    auto StringRef::operator == ( StringRef other ) const noexcept -> bool {
+    auto StringRefBase::operator == ( StringRefBase other ) const noexcept -> bool {
         return m_size == other.m_size
             && (std::memcmp( m_start, other.m_start, m_size ) == 0);
     }
-    auto StringRef::operator != (StringRef other) const noexcept -> bool {
+    auto StringRefBase::operator != (StringRefBase other) const noexcept -> bool {
         return !(*this == other);
     }
 

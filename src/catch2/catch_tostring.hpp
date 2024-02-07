@@ -13,6 +13,7 @@
 #include <catch2/internal/catch_config_wchar.hpp>
 #include <catch2/internal/catch_reusable_string_stream.hpp>
 #include <catch2/internal/catch_void_type.hpp>
+#include <catch2/internal/catch_stringrefbase.hpp>
 
 #include <cstddef>
 #include <string>
@@ -50,15 +51,13 @@ namespace Catch {
             return n;
         }
 
-        constexpr StringRef unprintableString = "{?}"_sr;
-
         //! Encases `string in quotes, and optionally escapes invisibles
-        std::string convertIntoString( StringRef string,
+        std::string convertIntoString( StringRefBase string,
                                        bool escapeInvisibles );
 
         //! Encases `string` in quotes, and escapes invisibles if user requested
         //! it via CLI
-        std::string convertIntoString( StringRef string );
+        std::string convertIntoString( StringRefBase string );
 
         std::string rawMemoryToString( const void* object, std::size_t size );
 
@@ -90,7 +89,7 @@ namespace Catch {
                              !std::is_base_of<std::exception, T>::value,
                          std::string>
         convertUnstreamable( T const& ) {
-            return std::string( Detail::unprintableString );
+            return std::string( "{?}" );
         }
         template <typename T>
         std::enable_if_t<!std::is_enum<T>::value &&
@@ -224,14 +223,14 @@ namespace Catch {
     struct StringMaker<char[SZ]> {
         static std::string convert( char const* str ) {
             return Detail::convertIntoString(
-                StringRef( str, Detail::catch_strnlen( str, SZ ) ) );
+                StringRefBase( str, Detail::catch_strnlen( str, SZ ) ) );
         }
     };
     template <size_t SZ>
     struct StringMaker<signed char[SZ]> {
         static std::string convert( signed char const* str ) {
             auto reinterpreted = reinterpret_cast<char const*>( str );
-            return Detail::convertIntoString( StringRef(
+            return Detail::convertIntoString( StringRefBase(
                 reinterpreted, Detail::catch_strnlen( reinterpreted, SZ ) ) );
         }
     };
@@ -239,7 +238,7 @@ namespace Catch {
     struct StringMaker<unsigned char[SZ]> {
         static std::string convert( unsigned char const* str ) {
             auto reinterpreted = reinterpret_cast<char const*>( str );
-            return Detail::convertIntoString( StringRef(
+            return Detail::convertIntoString( StringRefBase(
                 reinterpreted, Detail::catch_strnlen( reinterpreted, SZ ) ) );
         }
     };
@@ -677,8 +676,8 @@ namespace Catch {
                         .getMutableEnumValuesRegistry()                 \
                         .registerEnum(                                  \
                             #enumName, #__VA_ARGS__, { __VA_ARGS__ } ); \
-                return static_cast<std::string>(                        \
-                    enumInfo.lookup( static_cast<int>( value ) ) );     \
+                auto srb = enumInfo.lookup( static_cast<int>( value ) );\
+                return std::string(srb.data(), srb.size());             \
             }                                                           \
         };                                                              \
     }
