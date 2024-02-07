@@ -36,7 +36,8 @@ namespace Catch {
     }
 
     void AssertionHandler::handleExpr( IPrintableExpression const& expr ) {
-        expr.asTransient([this](ITransientExpression const& te){ handleExpr(te); });
+        auto* t = expr.asTransient(); // TODO make nicer
+        if (t) handleExpr(*t);
     }
     void AssertionHandler::handleExpr( ITransientExpression const& expr ) {
         m_resultCapture.handleExpr( m_assertionInfo, expr, m_reaction );

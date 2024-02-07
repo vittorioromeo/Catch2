@@ -9,6 +9,7 @@
 #include <catch2/interfaces/catch_interfaces_capture.hpp>
 #include <catch2/internal/catch_uncaught_exceptions.hpp>
 #include <catch2/internal/catch_move_and_forward.hpp>
+#include <catch2/internal/catch_stringref.hpp>
 
 namespace Catch {
 

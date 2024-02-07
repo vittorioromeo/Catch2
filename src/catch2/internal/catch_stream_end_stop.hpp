@@ -8,8 +8,6 @@
 #ifndef CATCH_STREAM_END_STOP_HPP_INCLUDED
 #define CATCH_STREAM_END_STOP_HPP_INCLUDED
 
-#include <catch2/internal/catch_stringref.hpp>
-
 namespace Catch {
 
     // Use this in variadic streaming macros to allow
@@ -17,7 +15,7 @@ namespace Catch {
     // as well as
     //    << stuff +StreamEndStop
     struct StreamEndStop {
-        constexpr StringRef operator+() const { return StringRef(); }
+        constexpr const char* operator+() const { return ""; }
 
         template <typename T>
         constexpr friend T const& operator+( T const& value, StreamEndStop ) {

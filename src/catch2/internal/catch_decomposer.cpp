@@ -7,6 +7,7 @@
 // SPDX-License-Identifier: BSL-1.0
 
 #include <catch2/internal/catch_decomposer.hpp>
+#include <catch2/internal/catch_stringref.hpp>
 
 #include <ostream>
 
@@ -15,12 +16,12 @@ namespace Catch {
     IPrintableExpression::~IPrintableExpression() = default;
     ITransientExpression::~ITransientExpression() = default;
 
-    void formatReconstructedExpression( std::ostream &os, std::string const& lhs, StringRef op, std::string const& rhs ) {
+    void formatReconstructedExpression( std::ostream &os, std::string const& lhs, StringRefBase op, std::string const& rhs ) {
         if( lhs.size() + rhs.size() < 40 &&
                 lhs.find('\n') == std::string::npos &&
                 rhs.find('\n') == std::string::npos )
-            os << lhs << ' ' << op << ' ' << rhs;
+            os << lhs << ' ' << StringRef(op) << ' ' << rhs;
         else
-            os << lhs << '\n' << op << '\n' << rhs;
+            os << lhs << '\n' << StringRef(op) << '\n' << rhs;
     }
 }

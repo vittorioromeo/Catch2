@@ -116,6 +116,12 @@ namespace Catch {
         return *this;
     }
 
+    auto ReusableStringStream::operator << ( StringRefBase const& value ) -> ReusableStringStream&
+    {
+        (*m_impl->m_oss) << StringRef(value);
+        return *this;
+    }
+
     auto ReusableStringStream::operator << ( SourceLineInfo const& value ) -> ReusableStringStream&
     {
         (*m_impl->m_oss) << value;

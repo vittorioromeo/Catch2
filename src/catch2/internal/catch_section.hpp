@@ -18,6 +18,8 @@
 
 namespace Catch {
 
+    class StringRef;
+
     class Section : Detail::NonCopyable {
     public:
         Section( SectionInfo&& info );

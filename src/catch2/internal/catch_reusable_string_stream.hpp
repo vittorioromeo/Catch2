@@ -16,6 +16,7 @@ namespace Catch {
 
     class LazyExpression;
     class StringRef;
+    class StringRefBase;
     struct SourceLineInfo;
     struct Version;
     class TestSpec;
@@ -54,6 +55,7 @@ namespace Catch {
     auto operator << ( std::string const& value ) -> ReusableStringStream&;
     auto operator << ( LazyExpression const& value ) -> ReusableStringStream&;
     auto operator << ( StringRef const& value ) -> ReusableStringStream&;
+    auto operator << ( StringRefBase const& value ) -> ReusableStringStream&;
     auto operator << ( SourceLineInfo const& value ) -> ReusableStringStream&;
     auto operator << ( Version const& value ) -> ReusableStringStream&;
     auto operator << ( TestSpec const& value ) -> ReusableStringStream&;

@@ -10,18 +10,18 @@
 
 #include <catch2/internal/catch_result_type.hpp>
 #include <catch2/internal/catch_source_line_info.hpp>
-#include <catch2/internal/catch_stringref.hpp>
+#include <catch2/internal/catch_stringrefbase.hpp>
 
 #include <string>
 
 namespace Catch {
 
     struct MessageInfo {
-        MessageInfo(    StringRef _macroName,
+        MessageInfo(    StringRefBase _macroName,
                         SourceLineInfo const& _lineInfo,
                         ResultWas::OfType _type );
 
-        StringRef macroName;
+        StringRefBase macroName;
         std::string message;
         SourceLineInfo lineInfo;
         ResultWas::OfType type;

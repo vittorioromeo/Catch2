@@ -10,6 +10,7 @@
 #include <catch2/internal/catch_uncaught_exceptions.hpp>
 #include <catch2/internal/catch_enforce.hpp>
 #include <catch2/internal/catch_move_and_forward.hpp>
+#include <catch2/internal/catch_stringref.hpp>
 
 #include <cassert>
 #include <stack>
@@ -37,11 +38,13 @@ namespace Catch {
     }
 
 
-    Capturer::Capturer( StringRef macroName,
+    Capturer::Capturer( StringRefBase macroName,
                         SourceLineInfo const& lineInfo,
                         ResultWas::OfType resultType,
-                        StringRef names ):
+                        StringRefBase xnames ):
         m_resultCapture( getResultCapture() ) {
+
+        StringRef names(xnames);
         auto trimmed = [&] (size_t start, size_t end) {
             while (names[start] == ',' || isspace(static_cast<unsigned char>(names[start]))) {
                 ++start;

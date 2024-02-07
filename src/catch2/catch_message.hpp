@@ -13,6 +13,7 @@
 #include <catch2/internal/catch_reusable_string_stream.hpp>
 #include <catch2/internal/catch_stream_end_stop.hpp>
 #include <catch2/internal/catch_message_info.hpp>
+#include <catch2/internal/catch_stringrefbase.hpp>
 #include <catch2/catch_tostring.hpp>
 #include <catch2/interfaces/catch_interfaces_capture.hpp>
 
@@ -36,7 +37,7 @@ namespace Catch {
     };
 
     struct MessageBuilder : MessageStream {
-        MessageBuilder( StringRef macroName,
+        MessageBuilder( StringRefBase macroName,
                         SourceLineInfo const& lineInfo,
                         ResultWas::OfType type ):
             m_info(macroName, lineInfo, type) {}
@@ -66,7 +67,7 @@ namespace Catch {
         IResultCapture& m_resultCapture;
         size_t m_captured = 0;
     public:
-        Capturer( StringRef macroName, SourceLineInfo const& lineInfo, ResultWas::OfType resultType, StringRef names );
+        Capturer( StringRefBase macroName, SourceLineInfo const& lineInfo, ResultWas::OfType resultType, StringRefBase names );
 
         Capturer(Capturer const&) = delete;
         Capturer& operator=(Capturer const&) = delete;

@@ -9,13 +9,12 @@
 #define CATCH_DECOMPOSER_HPP_INCLUDED
 
 #include <catch2/catch_tostring.hpp>
-#include <catch2/internal/catch_stringref.hpp>
+#include <catch2/internal/catch_stringrefbase.hpp>
 #include <catch2/internal/catch_compare_traits.hpp>
 #include <catch2/internal/catch_test_failure_exception.hpp>
 #include <catch2/internal/catch_logical_traits.hpp>
 
 #include <type_traits>
-#include <functional>
 #include <iosfwd>
 
 #ifdef _MSC_VER
@@ -45,7 +44,7 @@ namespace Catch {
     class IPrintableExpression {
     public:
         virtual ~IPrintableExpression();
-        virtual void asTransient( std::function<void(ITransientExpression const&)> const& fn ) const = 0;
+        virtual ITransientExpression* asTransient() const = 0;
     };
 
     class ITransientExpression {
@@ -76,12 +75,12 @@ namespace Catch {
         }
     };
 
-    void formatReconstructedExpression( std::ostream &os, std::string const& lhs, StringRef op, std::string const& rhs );
+    void formatReconstructedExpression( std::ostream &os, std::string const& lhs, StringRefBase op, std::string const& rhs );
 
     template<typename LhsT, typename RhsT>
     class BinaryExpr  : public ITransientExpression {
         LhsT m_lhs;
-        StringRef m_op;
+        StringRefBase m_op;
         RhsT m_rhs;
 
         void streamReconstructedExpression( std::ostream &os ) const override {
@@ -90,7 +89,7 @@ namespace Catch {
         }
 
     public:
-        BinaryExpr( bool comparisonResult, LhsT lhs, StringRef op, RhsT rhs )
+        BinaryExpr( bool comparisonResult, LhsT lhs, StringRefBase op, RhsT rhs )
         :   ITransientExpression{ true, comparisonResult },
             m_lhs( lhs ),
             m_op( op ),
@@ -176,12 +175,14 @@ namespace Catch {
     public:
         explicit ExprLhs( LhsT lhs ) : m_lhs( lhs ) {}
 
-        void asTransient( std::function<void(ITransientExpression const&)> const& fn ) const override
+        ITransientExpression* asTransient() const override
         {
             if constexpr (std::is_arithmetic_v<LhsT>)
             {
-                fn(makeUnaryExpr());
+                return new decltype(makeUnaryExpr())(makeUnaryExpr());
             }
+
+            return nullptr;
         }
 
 #define CATCH_INTERNAL_DEFINE_EXPRESSION_EQUALITY_OPERATOR( id, op )           \
@@ -193,7 +194,7 @@ namespace Catch {
                                     std::remove_reference_t<RhsT>>>>::value,   \
             BinaryExpr<LhsT, RhsT const&>> {                                   \
         return {                                                               \
-            static_cast<bool>( lhs.m_lhs op rhs ), lhs.m_lhs, #op##_sr, rhs }; \
+            static_cast<bool>( lhs.m_lhs op rhs ), lhs.m_lhs, #op, rhs }; \
     }                                                                          \
     template <typename RhsT>                                                   \
     friend auto operator op( ExprLhs&& lhs, RhsT rhs )                         \
@@ -202,7 +203,7 @@ namespace Catch {
                                 std::is_arithmetic<RhsT>>::value,              \
             BinaryExpr<LhsT, RhsT>> {                                          \
         return {                                                               \
-            static_cast<bool>( lhs.m_lhs op rhs ), lhs.m_lhs, #op##_sr, rhs }; \
+            static_cast<bool>( lhs.m_lhs op rhs ), lhs.m_lhs, #op, rhs }; \
     }                                                                          \
     template <typename RhsT>                                                   \
     friend auto operator op( ExprLhs&& lhs, RhsT rhs )                         \
@@ -216,7 +217,7 @@ namespace Catch {
             BinaryExpr<LhsT, RhsT>> {                                          \
         if ( rhs != 0 ) { throw_test_failure_exception(); }                    \
         return {                                                               \
-            static_cast<bool>( lhs.m_lhs op 0 ), lhs.m_lhs, #op##_sr, rhs };   \
+            static_cast<bool>( lhs.m_lhs op 0 ), lhs.m_lhs, #op, rhs };   \
     }                                                                          \
     template <typename RhsT>                                                   \
     friend auto operator op( ExprLhs&& lhs, RhsT rhs )                         \
@@ -229,7 +230,7 @@ namespace Catch {
                                     std::is_same<LhsT, long>>>::value,         \
             BinaryExpr<LhsT, RhsT>> {                                          \
         if ( lhs.m_lhs != 0 ) { throw_test_failure_exception(); }              \
-        return { static_cast<bool>( 0 op rhs ), lhs.m_lhs, #op##_sr, rhs };    \
+        return { static_cast<bool>( 0 op rhs ), lhs.m_lhs, #op, rhs };    \
     }
 
         CATCH_INTERNAL_DEFINE_EXPRESSION_EQUALITY_OPERATOR( eq, == )
@@ -246,7 +247,7 @@ namespace Catch {
                                     std::remove_reference_t<RhsT>>>>::value,   \
             BinaryExpr<LhsT, RhsT const&>> {                                   \
         return {                                                               \
-            static_cast<bool>( lhs.m_lhs op rhs ), lhs.m_lhs, #op##_sr, rhs }; \
+            static_cast<bool>( lhs.m_lhs op rhs ), lhs.m_lhs, #op, rhs }; \
     }                                                                          \
     template <typename RhsT>                                                   \
     friend auto operator op( ExprLhs&& lhs, RhsT rhs )                         \
@@ -255,7 +256,7 @@ namespace Catch {
                                 std::is_arithmetic<RhsT>>::value,              \
             BinaryExpr<LhsT, RhsT>> {                                          \
         return {                                                               \
-            static_cast<bool>( lhs.m_lhs op rhs ), lhs.m_lhs, #op##_sr, rhs }; \
+            static_cast<bool>( lhs.m_lhs op rhs ), lhs.m_lhs, #op, rhs }; \
     }                                                                          \
     template <typename RhsT>                                                   \
     friend auto operator op( ExprLhs&& lhs, RhsT rhs )                         \
@@ -267,7 +268,7 @@ namespace Catch {
             BinaryExpr<LhsT, RhsT>> {                                          \
         if ( rhs != 0 ) { throw_test_failure_exception(); }                    \
         return {                                                               \
-            static_cast<bool>( lhs.m_lhs op 0 ), lhs.m_lhs, #op##_sr, rhs };   \
+            static_cast<bool>( lhs.m_lhs op 0 ), lhs.m_lhs, #op, rhs };   \
     }                                                                          \
     template <typename RhsT>                                                   \
     friend auto operator op( ExprLhs&& lhs, RhsT rhs )                         \
@@ -278,7 +279,7 @@ namespace Catch {
                 std::is_same<LhsT, int>>::value,                               \
             BinaryExpr<LhsT, RhsT>> {                                          \
         if ( lhs.m_lhs != 0 ) { throw_test_failure_exception(); }              \
-        return { static_cast<bool>( 0 op rhs ), lhs.m_lhs, #op##_sr, rhs };    \
+        return { static_cast<bool>( 0 op rhs ), lhs.m_lhs, #op, rhs };    \
     }
 
         CATCH_INTERNAL_DEFINE_EXPRESSION_COMPARISON_OPERATOR( lt, < )
@@ -296,14 +297,14 @@ namespace Catch {
             !std::is_arithmetic<std::remove_reference_t<RhsT>>::value,         \
             BinaryExpr<LhsT, RhsT const&>> {                                   \
         return {                                                               \
-            static_cast<bool>( lhs.m_lhs op rhs ), lhs.m_lhs, #op##_sr, rhs }; \
+            static_cast<bool>( lhs.m_lhs op rhs ), lhs.m_lhs, #op, rhs }; \
     }                                                                          \
     template <typename RhsT>                                                   \
     friend auto operator op( ExprLhs&& lhs, RhsT rhs )                         \
         ->std::enable_if_t<std::is_arithmetic<RhsT>::value,                    \
                            BinaryExpr<LhsT, RhsT>> {                           \
         return {                                                               \
-            static_cast<bool>( lhs.m_lhs op rhs ), lhs.m_lhs, #op##_sr, rhs }; \
+            static_cast<bool>( lhs.m_lhs op rhs ), lhs.m_lhs, #op, rhs }; \
     }
 
         CATCH_INTERNAL_DEFINE_EXPRESSION_OPERATOR(|)
