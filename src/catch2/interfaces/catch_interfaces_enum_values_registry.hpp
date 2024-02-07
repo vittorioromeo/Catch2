@@ -10,16 +10,22 @@
 
 #include <catch2/internal/catch_stringrefbase.hpp>
 
-#include <vector> // TODO: remove
+#include <cstddef>
 
 namespace Catch {
 
     namespace Detail {
         struct EnumInfo {
+            struct StorageImpl;
             StringRefBase m_name;
-            std::vector<std::pair<int, StringRefBase>> m_values;
+            StorageImpl* m_storageImpl;
+            // std::vector<std::pair<int, StringRefBase>> m_values;
 
             ~EnumInfo();
+
+            EnumInfo() = default;
+            EnumInfo(const EnumInfo&) = delete;
+            EnumInfo(EnumInfo&&) = delete;
 
             StringRefBase lookup( int value ) const;
         };
@@ -29,15 +35,15 @@ namespace Catch {
     public:
         virtual ~IMutableEnumValuesRegistry(); // = default;
 
-        virtual Detail::EnumInfo const& registerEnum( StringRefBase enumName, StringRefBase allEnums, std::vector<int> const& values ) = 0;
+        virtual Detail::EnumInfo const& registerEnum( StringRefBase enumName, StringRefBase allEnums, const int* valuesPtr, std::size_t valuesCount ) = 0;
 
-        template<typename E>
-        Detail::EnumInfo const& registerEnum( StringRefBase enumName, StringRefBase allEnums, std::initializer_list<E> values ) {
+        template <typename E, std::size_t N>
+        Detail::EnumInfo const& registerEnum( StringRefBase enumName, StringRefBase allEnums, const E(&values)[N] ) {
             static_assert(sizeof(int) >= sizeof(E), "Cannot serialize enum to int");
-            std::vector<int> intValues;
-            intValues.reserve( values.size() );
+            int intValues[N];
+            std::size_t i = 0;
             for( auto enumValue : values )
-                intValues.push_back( static_cast<int>( enumValue ) );
+                intValues[i++] = static_cast<int>( enumValue );
             return registerEnum( enumName, allEnums, intValues );
         }
     };

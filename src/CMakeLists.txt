@@ -127,6 +127,7 @@ set(IMPL_HEADERS
   ${SOURCES_DIR}/internal/catch_stream_end_stop.hpp
   ${SOURCES_DIR}/internal/catch_string_manip.hpp
   ${SOURCES_DIR}/internal/catch_stringref.hpp
+  ${SOURCES_DIR}/internal/catch_stringrefbase.hpp
   ${SOURCES_DIR}/internal/catch_tag_alias_registry.hpp
   ${SOURCES_DIR}/internal/catch_template_test_registry.hpp
   ${SOURCES_DIR}/internal/catch_test_case_info_hasher.hpp

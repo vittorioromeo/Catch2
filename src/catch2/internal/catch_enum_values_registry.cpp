@@ -40,32 +40,40 @@ namespace Catch {
             return parsed;
         }
 
-        EnumInfo::~EnumInfo() = default;
+        struct EnumInfo::StorageImpl
+        {
+            std::vector<std::pair<int, StringRefBase>> m_values;
+        };
+
+        EnumInfo::~EnumInfo()
+        {
+            delete m_storageImpl;
+        }
 
         StringRefBase EnumInfo::lookup( int value ) const {
-            for( auto const& valueToName : m_values ) {
+            for( auto const& valueToName : m_storageImpl->m_values ) {
                 if( valueToName.first == value )
                     return valueToName.second;
             }
             return "{** unexpected enum value **}"_sr;
         }
 
-        Catch::Detail::unique_ptr<EnumInfo> makeEnumInfo( StringRefBase enumName, StringRefBase allValueNames, std::vector<int> const& values ) {
+        Catch::Detail::unique_ptr<EnumInfo> makeEnumInfo( StringRefBase enumName, StringRefBase allValueNames,  const int* valuesPtr, std::size_t valuesCount ) {
             auto enumInfo = Catch::Detail::make_unique<EnumInfo>();
             enumInfo->m_name = enumName;
-            enumInfo->m_values.reserve( values.size() );
+            enumInfo->m_storageImpl = new EnumInfo::StorageImpl;
+            enumInfo->m_storageImpl->m_values.reserve( valuesCount );
 
             const auto valueNames = Catch::Detail::parseEnums( allValueNames );
-            assert( valueNames.size() == values.size() );
-            std::size_t i = 0;
-            for( auto value : values )
-                enumInfo->m_values.emplace_back(value, valueNames[i++]);
+            assert( valueNames.size() == valuesCount );
+            for (std::size_t i = 0; i < valuesCount; ++i)
+                enumInfo->m_storageImpl->m_values.emplace_back(valuesPtr[i], valueNames[i]);
 
             return enumInfo;
         }
 
-        EnumInfo const& EnumValuesRegistry::registerEnum( StringRefBase enumName, StringRefBase allValueNames, std::vector<int> const& values ) {
-            m_enumInfos.push_back(makeEnumInfo(enumName, allValueNames, values));
+        EnumInfo const& EnumValuesRegistry::registerEnum( StringRefBase enumName, StringRefBase allValueNames,  const int* valuesPtr, std::size_t valuesCount ) {
+            m_enumInfos.push_back(makeEnumInfo(enumName, allValueNames, valuesPtr, valuesCount));
             return *m_enumInfos.back();
         }
 

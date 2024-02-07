@@ -50,7 +50,8 @@ TEST_CASE( "parseEnums", "[Strings][enums]" ) {
 TEST_CASE( "Directly creating an EnumInfo" ) {
 
     using namespace Catch::Detail;
-    auto enumInfo = makeEnumInfo( "EnumName", "EnumName::Value1, EnumName::Value2", {0, 1} );
+    int values[] = {0, 1};
+    auto enumInfo = makeEnumInfo( "EnumName", "EnumName::Value1, EnumName::Value2", values, 2);
 
     CHECK( enumInfo->lookup(0) == "Value1" );
     CHECK( enumInfo->lookup(1) == "Value2" );
