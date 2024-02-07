@@ -281,27 +281,27 @@ namespace Catch {
 
             ReusableStringStream rss;
             if ( result.getResultType() == ResultWas::ExplicitSkip ) {
-                rss.get() << "SKIPPED\n";
+                rss << "SKIPPED\n";
             } else {
-                rss.get() << "FAILED" << ":\n";
+                rss << "FAILED" << ":\n";
                 if (result.hasExpression()) {
-                    rss.get() << "  ";
-                    rss.get() << result.getExpressionInMacro();
-                    rss.get() << '\n';
+                    rss << "  ";
+                    rss << result.getExpressionInMacro();
+                    rss << '\n';
                 }
                 if (result.hasExpandedExpression()) {
-                    rss.get() << "with expansion:\n";
+                    rss << "with expansion:\n";
                     rss.get() << TextFlow::Column(result.getExpandedExpression()).indent(2) << '\n';
                 }
             }
 
             if( result.hasMessage() )
-                rss.get() << result.getMessage() << '\n';
+                rss << result.getMessage() << '\n';
             for( auto const& msg : stats.infoMessages )
                 if( msg.type == ResultWas::Info )
-                    rss.get() << msg.message << '\n';
+                    rss << msg.message << '\n';
 
-            rss.get() << "at " << result.getSourceInfo();
+            rss << "at " << result.getSourceInfo();
             xml.writeText( rss.str(), XmlFormatting::Newline );
         }
     }

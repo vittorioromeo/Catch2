@@ -11,6 +11,8 @@
 #include <catch2/interfaces/catch_interfaces_registry_hub.hpp>
 #include <catch2/internal/catch_move_and_forward.hpp>
 
+#include <ostream>
+
 namespace Catch {
 
     // This is the general overload that takes a any string matcher
@@ -20,6 +22,10 @@ namespace Catch {
         std::string exceptionMessage = Catch::translateActiveException();
         MatchExpr<std::string, StringMatcher const&> expr( CATCH_MOVE(exceptionMessage), matcher );
         handler.handleExpr( expr );
+    }
+
+    void streamReconstructedExpressionImpl( std::ostream& os, const std::string& argStr, const std::string& matcherStr ) {
+        os << argStr << ' ' << matcherStr;
     }
 
 } // namespace Catch

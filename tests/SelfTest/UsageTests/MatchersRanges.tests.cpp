@@ -23,6 +23,7 @@
 #include <type_traits>
 #include <vector>
 #include <memory>
+#include <ostream>
 
 struct MoveOnlyTestElement {
     int num = 0;

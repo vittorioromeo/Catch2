@@ -14,15 +14,18 @@
 #include <catch2/internal/catch_preprocessor_internal_stringify.hpp>
 #include <catch2/internal/catch_move_and_forward.hpp>
 
-#include <ostream>
+#include <iosfwd>
 #include <string>
 
 namespace Catch {
+
+    void streamReconstructedExpressionImpl( std::ostream& os, const std::string& argStr, const std::string& matcherStr );
 
     template<typename ArgT, typename MatcherT>
     class MatchExpr : public ITransientExpression {
         ArgT && m_arg;
         MatcherT const& m_matcher;
+
     public:
         MatchExpr( ArgT && arg, MatcherT const& matcher )
         :   ITransientExpression{ true, matcher.match( arg ) }, // not forwarding arg here on purpose
@@ -31,9 +34,7 @@ namespace Catch {
         {}
 
         void streamReconstructedExpression( std::ostream& os ) const override {
-            os << Catch::Detail::stringify( m_arg )
-               << ' '
-               << m_matcher.toString();
+            streamReconstructedExpressionImpl(os, Catch::Detail::stringify( m_arg ),  m_matcher.toString());
         }
     };
 

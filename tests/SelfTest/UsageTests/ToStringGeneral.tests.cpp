@@ -9,6 +9,7 @@
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 #include <catch2/catch_test_macros.hpp>
 
+#include <ostream>
 #include <map>
 #include <set>
 
